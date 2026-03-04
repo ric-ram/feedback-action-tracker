@@ -30,5 +30,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:snapshot
+    restart: always
+    container_name: ft_pgadmin
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PG_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PG_PASSWORD}
+    ports:
+      - "5051:80"
+    depends_on:
+      - db
 volumes:
   db:
+  pgadmin:
