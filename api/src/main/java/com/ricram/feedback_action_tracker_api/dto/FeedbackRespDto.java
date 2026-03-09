@@ -11,6 +11,6 @@ public record FeedbackRespDto(
         String description,
         String source,
         Instant createdAt,
-        Instant updatedAT
+        Instant updatedAt
 ) {
 }
