@@ -91,8 +91,8 @@ public class FeedbackServiceImplTests {
         Workspace existingWorkspace = new Workspace(
                 UUID.randomUUID(),
                 "test",
-                NOW,
-                NOW
+                Instant.parse("2026-03-09T12:00:00Z"),
+                Instant.parse("2025-03-09T12:00:00Z")
         );
 
         Feedback existingFeedback = new Feedback(feedbackId,
@@ -100,8 +100,8 @@ public class FeedbackServiceImplTests {
                 "testFeedback",
                 "testing",
                 "EMAIL",
-                NOW,
-                NOW
+                Instant.parse("2025-03-09T12:00:00Z"),
+                Instant.parse("2026-03-09T12:10:00Z")
         );
 
         when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(existingFeedback));
@@ -131,7 +131,7 @@ public class FeedbackServiceImplTests {
         );
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
-        assertTrue(ex.getReason().contains("feedback not found"));
+        assertTrue(ex.getReason() != null && ex.getReason().contains("feedback not found"));
 
         verify(feedbackRepository).findById(feedbackId);
         verifyNoMoreInteractions(feedbackRepository);
@@ -143,8 +143,8 @@ public class FeedbackServiceImplTests {
         UUID workspaceId = UUID.randomUUID();
         Workspace existingWorkspace = new Workspace(workspaceId,
                 "test",
-                NOW,
-                NOW);
+                Instant.parse("2026-03-09T12:00:00Z"),
+                Instant.parse("2026-03-09T12:00:00Z"));
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
 
@@ -157,8 +157,8 @@ public class FeedbackServiceImplTests {
                 .title("test feed 1")
                 .description("testing feed 1")
                 .source("EMAIL")
-                .createdAt(Instant.parse("2026-03-10T12:00:00Z"))
-                .updatedAt(Instant.parse("2026-03-10T12:00:00Z"))
+                .createdAt(Instant.parse("2026-03-11T12:00:00Z"))
+                .updatedAt(Instant.parse("2026-03-11T12:00:00Z"))
                 .build();
 
         Feedback f2 = Feedback.builder()
@@ -167,8 +167,8 @@ public class FeedbackServiceImplTests {
                 .title("test feed 2")
                 .description("testing feed 2")
                 .source("FORM")
-                .createdAt(Instant.parse("2026-03-11T12:00:00Z"))
-                .updatedAt(Instant.parse("2026-03-11T12:00:00Z"))
+                .createdAt(Instant.parse("2026-03-10T12:00:00Z"))
+                .updatedAt(Instant.parse("2026-03-10T12:00:00Z"))
                 .build();
 
         when(workspaceRepository.existsById(workspaceId))
@@ -193,7 +193,7 @@ public class FeedbackServiceImplTests {
         assertEquals(f2.getDescription(), second.description());
         assertEquals(f2.getSource(), second.source());
 
-        assertTrue(first.createdAt().isBefore(second.createdAt()));
+        assertTrue(first.createdAt().isAfter(second.createdAt()));
 
         verify(workspaceRepository).existsById(workspaceId);
         verify(feedbackRepository).findByWorkspaceId(workspaceId, sort);
