@@ -40,7 +40,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public FeedbackRespDto createFeedbackForWorkspace(UUID workspaceId, CreateFeedbackReqDto feedbackReqDto) {
         Workspace currentWorkspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "workspace not found"));
 
         Feedback newFeedback = Feedback.builder()
                 .workspace(currentWorkspace)
