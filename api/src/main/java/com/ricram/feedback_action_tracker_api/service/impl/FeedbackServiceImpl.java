@@ -56,7 +56,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional(readOnly = true)
     public FeedbackRespDto getFeedbackById(UUID feedbackId) {
         Feedback currentFeedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "feedback provided doesn't exist"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "feedback not found"));
 
         return toRespDto(currentFeedback);
     }
@@ -65,7 +65,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional(readOnly = true)
     public List<FeedbackRespDto> listFeedbackForWorkspace(UUID workspaceId) {
         if (!workspaceRepository.existsById(workspaceId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "workspace provided not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "workspace not found");
         }
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
