@@ -1,7 +1,5 @@
 package com.ricram.feedback_action_tracker_api.dto;
 
-import lombok.EqualsAndHashCode;
-
 import java.time.Instant;
 import java.util.UUID;
 

@@ -7,7 +7,6 @@ import com.ricram.feedback_action_tracker_api.entity.Workspace;
 import com.ricram.feedback_action_tracker_api.repository.FeedbackRepository;
 import com.ricram.feedback_action_tracker_api.repository.WorkspaceRepository;
 import com.ricram.feedback_action_tracker_api.service.impl.FeedbackServiceImpl;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +59,7 @@ public class FeedbackServiceImplTests {
                    Feedback f = invocation.getArgument(0);
                    f.setId(feedbackId);
                    f.setWorkspace(existingWorkspace);
-                   f.setCreatedAt(NOW);
+                   f.setCreatedAt(Instant.parse("2026-03-09T12:00:00Z"));
                    return f;
                 });
         CreateFeedbackReqDto req = new CreateFeedbackReqDto("testFeedback", "testing", "EMAIL");
@@ -82,6 +82,28 @@ public class FeedbackServiceImplTests {
         verify(feedbackRepository).save(savedFeedback);
         verifyNoMoreInteractions(workspaceRepository);
         verifyNoMoreInteractions(feedbackRepository);
+    }
+
+    @Test
+    @DisplayName("createFeedbackForWorkspace() -> Workspace not found")
+    void createFeedbackForWorkspaceNotFound() {
+        UUID workspaceId = UUID.randomUUID();
+
+        when(workspaceRepository.findById(workspaceId)).thenReturn(Optional.empty());
+
+        CreateFeedbackReqDto req = new CreateFeedbackReqDto("testFeedback", "testing", "EMAIL");
+
+        ResponseStatusException ex = assertThrows(
+                ResponseStatusException.class,
+                () -> feedbackService.createFeedbackForWorkspace(workspaceId, req)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertTrue(ex.getReason() != null && ex.getReason().contains("workspace not found"));
+
+        verify(workspaceRepository).findById(workspaceId);
+        verifyNoMoreInteractions(workspaceRepository);
+        verifyNoInteractions(feedbackRepository);
     }
 
     @Test
