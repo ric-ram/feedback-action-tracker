@@ -13,10 +13,15 @@ export default function FeedbackSection() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const loadFeedback = async () => {
-        setLoading(true);
-        const list = await getFeedback();
-        setFeedbacks(list);
-        setLoading(false);
+        try {
+            setLoading(true);
+            const response = await getFeedback();
+            setFeedbacks(response);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleCreate = async () => {
@@ -24,7 +29,11 @@ export default function FeedbackSection() {
     };
 
     useEffect(() => {
-        loadFeedback();
+        const run = async () => {
+            await loadFeedback();
+        };
+
+        run();
     }, []);
 
     return (
