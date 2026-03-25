@@ -1,0 +1,3 @@
+INSERT INTO workspace (id, name)
+VALUES ('00000000-0000-0000-0000-000000000001', 'Default Workspace')
+ON CONFLICT (id) DO NOTHING;
