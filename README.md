@@ -69,7 +69,7 @@ Backend requires the following variables:
 
 The frontend requires the following variables:
 
-- NEXT_PUBLIC_BASE_URL=<http://localhost:8080>
+- NEXT_PUBLIC_BASE_URL=[localhost:8080](http://localhost:8080)
 - NEXT_PUBLIC_FEEDBACK_ENDPOINT=/api/feedback
 
 ## Running the Application
