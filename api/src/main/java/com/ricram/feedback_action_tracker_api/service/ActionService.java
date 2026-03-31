@@ -22,10 +22,11 @@ public interface ActionService {
     /**
      * Retrieves the acton based on it's id
      *
+     * @param feedbackId the feedback id the action belongs to
      * @param actionId the action id
      * @return action details
      */
-    ActionRespDto getActionById(UUID actionId);
+    ActionRespDto getActionById(UUID feedbackId, UUID actionId);
 
     /**
      * List all actions belonging to a feedback

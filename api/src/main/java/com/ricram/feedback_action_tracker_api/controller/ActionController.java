@@ -37,8 +37,8 @@ public class ActionController {
     }
 
     @GetMapping("/{actionId}")
-    public ResponseEntity<ActionRespDto> getActionById(@PathVariable UUID actionId) {
-        ActionRespDto resp = actionService.getActionById(actionId);
+    public ResponseEntity<ActionRespDto> getActionById(@PathVariable UUID feedbackId, @PathVariable UUID actionId) {
+        ActionRespDto resp = actionService.getActionById(feedbackId, actionId);
 
         return ResponseEntity
                 .ok()

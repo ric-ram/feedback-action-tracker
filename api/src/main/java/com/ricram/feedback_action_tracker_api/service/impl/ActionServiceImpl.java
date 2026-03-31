@@ -56,7 +56,11 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     @Transactional(readOnly = true)
-    public ActionRespDto getActionById(UUID actionId) {
+    public ActionRespDto getActionById(UUID feedbackId, UUID actionId) {
+        if (!feedbackRepository.existsById(feedbackId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "feedback not found");
+        }
+
         Action currentAction = actionRepository.findById(actionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
 
