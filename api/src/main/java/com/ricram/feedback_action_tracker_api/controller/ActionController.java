@@ -4,6 +4,7 @@ package com.ricram.feedback_action_tracker_api.controller;
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
 import com.ricram.feedback_action_tracker_api.service.ActionService;
+import jakarta.validation.OverridesAttribute;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -38,6 +40,15 @@ public class ActionController {
     @GetMapping("/{actionId}")
     public ResponseEntity<ActionRespDto> getActionById(@PathVariable UUID actionId) {
         ActionRespDto resp = actionService.getActionById(actionId);
+
+        return ResponseEntity
+                .ok()
+                .body(resp);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ActionRespDto>> listActions(@PathVariable UUID feedbackId) {
+        List<ActionRespDto> resp = actionService.listActionsForFeedback(feedbackId);
 
         return ResponseEntity
                 .ok()

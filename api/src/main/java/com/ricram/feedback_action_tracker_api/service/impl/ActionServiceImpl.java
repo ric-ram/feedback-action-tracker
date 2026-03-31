@@ -9,8 +9,10 @@ import com.ricram.feedback_action_tracker_api.repository.FeedbackRepository;
 import com.ricram.feedback_action_tracker_api.service.ActionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.micrometer.observation.autoconfigure.ObservationProperties;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional
     public ActionRespDto createActionForFeedback(UUID feedbackId, CreateActionReqDto actionReqDto) {
         Feedback currentFeedback = feedbackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "feedback not found"));
@@ -52,6 +55,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ActionRespDto getActionById(UUID actionId) {
         Action currentAction = actionRepository.findById(actionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
@@ -60,7 +64,16 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ActionRespDto> listActionsForFeedback(UUID feedbackId) {
-        return List.of();
+        if (!feedbackRepository.existsById(feedbackId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "feedback not found");
+        }
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        List<Action> actionList = actionRepository.findByFeedbackId(feedbackId, sort);
+
+        return actionList.stream().map(this::toRespDto).toList();
     }
 }
