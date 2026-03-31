@@ -9,7 +9,6 @@ import com.ricram.feedback_action_tracker_api.repository.ActionRepository;
 import com.ricram.feedback_action_tracker_api.repository.FeedbackRepository;
 import com.ricram.feedback_action_tracker_api.service.ActionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.micrometer.observation.autoconfigure.ObservationProperties;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
