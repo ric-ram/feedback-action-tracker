@@ -3,6 +3,7 @@ package com.ricram.feedback_action_tracker_api.service.impl;
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
 import com.ricram.feedback_action_tracker_api.entity.Action;
+import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 import com.ricram.feedback_action_tracker_api.entity.Feedback;
 import com.ricram.feedback_action_tracker_api.repository.ActionRepository;
 import com.ricram.feedback_action_tracker_api.repository.FeedbackRepository;
@@ -47,7 +48,7 @@ public class ActionServiceImpl implements ActionService {
                 .feedback(currentFeedback)
                 .title(actionReqDto.title())
                 .description(actionReqDto.description())
-                .status(actionReqDto.status())
+                .status(ActionStatus.TODO)
                 .build();
 
         Action savedAction = actionRepository.save(newAction);

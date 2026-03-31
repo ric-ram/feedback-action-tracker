@@ -10,9 +10,7 @@ public record CreateActionReqDto(
         @Size(max = 255, message = "Title should not contain more than 255 characters")
         String title,
 
-        String description,
+        String description
 
-        @NotNull
-        ActionStatus status
 ) {
 }
