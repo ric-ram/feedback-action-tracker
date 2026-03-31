@@ -53,7 +53,10 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public ActionRespDto getActionById(UUID actionId) {
-        return null;
+        Action currentAction = actionRepository.findById(actionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
+
+        return toRespDto(currentAction);
     }
 
     @Override

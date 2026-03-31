@@ -34,4 +34,13 @@ public class ActionController {
                 .created(location)
                 .body(resp);
     }
+
+    @GetMapping("/{actionId}")
+    public ResponseEntity<ActionRespDto> getActionById(@PathVariable UUID actionId) {
+        ActionRespDto resp = actionService.getActionById(actionId);
+
+        return ResponseEntity
+                .ok()
+                .body(resp);
+    }
 }
