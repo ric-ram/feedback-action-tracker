@@ -22,3 +22,13 @@ export type ResponsePayload<T> = {
     data?: T;
     fieldErrors?: unknown;
 };
+
+export interface Action extends EntryData {
+    title: string;
+    description: string;
+}
+
+export type ActionPayload = {
+    title: string;
+    description?: string;
+};
