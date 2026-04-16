@@ -146,21 +146,18 @@ public class ActionServiceImplTests {
                 Instant.parse("2026-04-07T12:00:00Z")
         );
 
-        when(feedbackRepository.existsById(feedbackId)).thenReturn(Boolean.TRUE);
-        when(actionRepository.findById(actionId)).thenReturn(Optional.of(existingAction));
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.of(existingAction));
 
         ActionRespDto resp = actionServiceImpl.getActionById(feedbackId, actionId);
 
         assertEquals(existingAction.getId(), resp.id());
         assertEquals(existingAction.getTitle(), resp.title());
         assertEquals(existingAction.getDescription(), resp.description());
-        assertEquals(existingAction.getFeedback(), existingFeedback);
         assertEquals(existingAction.getStatus(), resp.status());
         assertEquals(existingAction.getCreatedAt(), resp.createdAt());
 
-        verify(feedbackRepository).existsById(feedbackId);
-        verify(actionRepository).findById(actionId);
-        verifyNoMoreInteractions(feedbackRepository, actionRepository);
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
+        verifyNoMoreInteractions(actionRepository);
     }
 
     @Test
@@ -169,29 +166,7 @@ public class ActionServiceImplTests {
         UUID feedbackId = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
 
-        when(feedbackRepository.existsById(feedbackId)).thenReturn(Boolean.FALSE);
-
-        ResponseStatusException ex = assertThrows(
-                ResponseStatusException.class,
-                () -> actionServiceImpl.getActionById(feedbackId, actionId)
-        );
-
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
-        assertTrue(ex.getMessage().contains("feedback not found"));
-
-        verify(feedbackRepository).existsById(feedbackId);
-        verifyNoMoreInteractions(feedbackRepository, actionRepository);
-    }
-
-    @Test
-    @DisplayName("getAcitonById() -> Action not found")
-    void getActionByIdActionNotFound() {
-        UUID feedbackId = UUID.randomUUID();
-        UUID actionId = UUID.randomUUID();
-
-        when(feedbackRepository.existsById(feedbackId)).thenReturn(Boolean.TRUE);
-
-        when(actionRepository.findById(actionId)).thenReturn(Optional.empty());
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.empty());
 
         ResponseStatusException ex = assertThrows(
                 ResponseStatusException.class,
@@ -201,9 +176,88 @@ public class ActionServiceImplTests {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
         assertTrue(ex.getMessage().contains("action not found"));
 
-        verify(feedbackRepository).existsById(feedbackId);
-        verify(actionRepository).findById(actionId);
-        verifyNoMoreInteractions(feedbackRepository, actionRepository);
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
+        verifyNoMoreInteractions(actionRepository);
+    }
+
+    @Test
+    @DisplayName("getActionById() -> Feedback-action mismatch, action not found")
+    void getActionByIdActionNotChildOfFeedback() {
+        UUID feedbackId1 = UUID.randomUUID();
+        UUID feedbackId2 = UUID.randomUUID();
+        UUID actionId = UUID.randomUUID();
+        UUID workspaceId = UUID.randomUUID();
+        Workspace existingWorkspace = new Workspace(
+                workspaceId,
+                "test",
+                Instant.parse("2026-03-09T12:00:00Z"),
+                Instant.parse("2026-03-09T12:00:00Z")
+        );
+
+        Feedback existingFeedback1 = new Feedback(
+                feedbackId1,
+                existingWorkspace,
+                "testFeedback",
+                "testing",
+                "TEST",
+                Instant.parse("2026-03-10T12:00:00Z"),
+                Instant.parse("2026-03-10T12:00:00Z")
+        );
+
+        Feedback existingFeedback2 = new Feedback(
+                feedbackId2,
+                existingWorkspace,
+                "testFeedback",
+                "testing",
+                "TEST",
+                Instant.parse("2026-03-10T12:00:00Z"),
+                Instant.parse("2026-03-10T12:00:00Z")
+        );
+
+        Action existingAction = new Action(
+                actionId,
+                existingFeedback2,
+                "task",
+                "testing",
+                ActionStatus.TODO,
+                Instant.parse("2026-04-07T12:00:00Z"),
+                Instant.parse("2026-04-07T12:00:00Z")
+        );
+
+
+        when(actionRepository.findByFeedbackIdAndId(feedbackId1, actionId)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(
+                ResponseStatusException.class,
+                () -> actionServiceImpl.getActionById(feedbackId1, actionId)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertTrue(ex.getMessage().contains("action not found"));
+
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId1, actionId);
+        verifyNoMoreInteractions(actionRepository);
+    }
+
+    @Test
+    @DisplayName("getActionById() -> Action not found")
+    void getActionByIdActionNotFound() {
+        UUID feedbackId = UUID.randomUUID();
+        UUID actionId = UUID.randomUUID();
+
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(
+                ResponseStatusException.class,
+                () -> actionServiceImpl.getActionById(feedbackId, actionId)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertTrue(ex.getMessage().contains("action not found"));
+
+
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
+        verifyNoMoreInteractions(actionRepository);
     }
 
     @Test
