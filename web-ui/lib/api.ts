@@ -85,7 +85,7 @@ export async function getActionsForFeedback(
 ): Promise<Action[]> {
     try {
         const resp = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}${feedbackId}/actions`
+            `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}/actions`
         );
 
         if (!resp.ok) {
@@ -120,7 +120,7 @@ export async function createActionForFeedback(
 
     try {
         const resp = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}${feedbackId}/actions`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}/actions`,
             {
                 method: 'POST',
                 headers: {
