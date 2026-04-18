@@ -58,7 +58,7 @@ export default function ActionsTable(
     return (
         <Table>
             <TableCaption>
-                A list of all actions related to Feedback
+                A list of all actions related to the current Feedback
             </TableCaption>
             <TableHeader>
                 <TableRow>
