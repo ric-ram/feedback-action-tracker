@@ -43,11 +43,11 @@ export default function ActionsTable(
                 <TableCell>{a.title}</TableCell>
                 <TableCell>{a.description}</TableCell>
                 <TableCell>
-                    {StatusSelector({
-                        feedbackId: props.feedbackId,
-                        actionId: a.id,
-                        currentStatus: a.status,
-                    })}
+                    <StatusSelector
+                        feedbackId={props.feedbackId}
+                        actionId={a.id}
+                        currentStatus={a.status}
+                    />
                 </TableCell>
                 <TableCell>{a.updatedAt}</TableCell>
                 <TableCell>{a.createdAt}</TableCell>

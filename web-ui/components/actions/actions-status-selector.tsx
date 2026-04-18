@@ -24,13 +24,15 @@ export default function StatusSelector({
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleChange = async (newStatus: string) => {
+        const previousStatus = status;
+
         setStatus(newStatus);
         setLoading(true);
 
         try {
             await updateActionStatus(feedbackId, actionId, newStatus);
         } catch (e) {
-            setStatus(currentStatus);
+            setStatus(previousStatus);
             console.error(e);
         } finally {
             setLoading(false);

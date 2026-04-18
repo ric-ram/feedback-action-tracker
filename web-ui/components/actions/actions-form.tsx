@@ -52,12 +52,12 @@ export default function ActionForm(
                 props.handleCreate();
             } else {
                 setSuccess(false);
-                setSubmitMessage('Error submitting feedback!');
+                setSubmitMessage('Error submitting new action!');
             }
         } catch (e) {
             console.log(e);
             setSuccess(false);
-            setSubmitMessage('Error submitting action¬');
+            setSubmitMessage('Error submitting action!');
         } finally {
             setLoading(false);
         }
