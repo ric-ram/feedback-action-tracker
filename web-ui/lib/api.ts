@@ -80,6 +80,38 @@ export async function createFeedback(
     }
 }
 
+export async function getFeedbackById(
+    feedbackId: string
+): Promise<ResponsePayload<Feedback>> {
+    try {
+        const resp = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}`
+        );
+
+        if (!resp.ok) {
+            return {
+                success: false,
+                message: resp.statusText,
+                fieldErrors: resp.status,
+            };
+        }
+
+        const feedback = await resp.json();
+
+        return {
+            success: true,
+            message: `Feedback with id ${feedbackId} successfully retrieved!`,
+            data: feedback,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: `Retrieving feedback with id: ${feedbackId} failed!`,
+            fieldErrors: e,
+        };
+    }
+}
+
 export async function getActionsForFeedback(
     feedbackId: string
 ): Promise<Action[]> {

@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-import ActionForm from '@/components/actions/action-form';
+import ActionsSection from '@/components/actions/actions-section';
 import { Separator } from '@/components/ui/separator';
 
 export default function ActionPage() {
@@ -21,7 +21,7 @@ export default function ActionPage() {
                 </CardHeader>
                 <Separator className="my-6" />
                 <CardContent>
-                    <ActionForm />
+                    <ActionsSection />
                 </CardContent>
             </Card>
         </div>

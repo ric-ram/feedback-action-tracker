@@ -10,7 +10,6 @@ import {
 } from '../ui/field';
 
 import { createActionForFeedback } from '@/lib/api';
-import { useParams } from 'next/navigation';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Spinner } from '../ui/spinner';
@@ -18,15 +17,10 @@ import { Textarea } from '../ui/textarea';
 
 export default function ActionForm(
     props: Readonly<{
-        handleCreate?: () => void;
+        feedbackId: string;
+        handleCreate: () => void;
     }>
 ) {
-    const params = useParams();
-    const paramValue = params.feedbackId;
-    const feedbackId: string = Array.isArray(paramValue)
-        ? paramValue[0]
-        : (paramValue ?? '');
-
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -48,14 +42,14 @@ export default function ActionForm(
                     title,
                     description,
                 },
-                feedbackId
+                props.feedbackId
             );
 
             if (resp.success) {
                 setSuccess(true);
                 setSubmitMessage('New action submitted successfully!');
                 cleanState();
-                //props.handleCreate();
+                props.handleCreate();
             } else {
                 setSuccess(false);
                 setSubmitMessage('Error submitting feedback!');

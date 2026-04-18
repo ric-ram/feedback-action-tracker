@@ -26,6 +26,7 @@ export type ResponsePayload<T> = {
 export interface Action extends EntryData {
     title: string;
     description: string;
+    status?: string;
 }
 
 export type ActionPayload = {
