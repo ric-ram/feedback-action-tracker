@@ -9,6 +9,9 @@ import {
 } from '../ui/table';
 
 import { Feedback } from '@/app/types/commonTypes';
+import { ListTodoIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../ui/button';
 import { Spinner } from '../ui/spinner';
 
 export default function FeedbackTable(
@@ -23,12 +26,13 @@ export default function FeedbackTable(
                     <TableHead>Source</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Submit Date</TableHead>
+                    <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {props.loading ? (
                     <TableRow>
-                        <TableCell colSpan={4} className="text-center">
+                        <TableCell colSpan={5} className="text-center">
                             <Spinner className="size-8" />
                         </TableCell>
                     </TableRow>
@@ -39,6 +43,20 @@ export default function FeedbackTable(
                             <TableCell>{f.source}</TableCell>
                             <TableCell>{f.description}</TableCell>
                             <TableCell>{f.createdAt}</TableCell>
+                            <TableCell>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="cursor-pointer"
+                                    aria-label="go to actions dashboard"
+                                    asChild
+                                >
+                                    <Link href={`/feedback/${f.id}/actions`}>
+                                        <ListTodoIcon />
+                                        Actions
+                                    </Link>
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     ))
                 ) : (
