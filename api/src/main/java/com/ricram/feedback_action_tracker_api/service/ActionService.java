@@ -2,6 +2,7 @@ package com.ricram.feedback_action_tracker_api.service;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
 import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 
 import java.util.List;
@@ -45,5 +46,5 @@ public interface ActionService {
      * @param actionStatus the new status of the action
      * @return the updated action
      */
-    ActionRespDto updateActionStatus(UUID feedbackId, UUID actionId, ActionStatus actionStatus);
+    ActionRespDto updateActionStatus(UUID feedbackId, UUID actionId, UpdateActionStatusReqDto actionStatus);
 }

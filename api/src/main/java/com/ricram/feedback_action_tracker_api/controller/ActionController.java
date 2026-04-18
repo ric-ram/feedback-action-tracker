@@ -58,7 +58,7 @@ public class ActionController {
 
     @PatchMapping("/{actionId}/status")
     public ResponseEntity<ActionRespDto> updateActionStatus(@PathVariable UUID feedbackId, @PathVariable UUID actionId, @Valid @RequestBody UpdateActionStatusReqDto status) {
-        ActionRespDto resp = actionService.updateActionStatus(feedbackId, actionId, status.status());
+        ActionRespDto resp = actionService.updateActionStatus(feedbackId, actionId, status);
 
         return ResponseEntity
                 .ok()
