@@ -76,4 +76,16 @@ public class ActionServiceImpl implements ActionService {
 
         return actionList.stream().map(this::toRespDto).toList();
     }
+
+    @Override
+    @Transactional
+    public ActionRespDto updateActionStatus(UUID feedbackId, UUID actionId, ActionStatus actionStatus) {
+        Action currentAction = actionRepository.findByFeedbackIdAndId(feedbackId, actionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
+
+        currentAction.setStatus(actionStatus);
+        actionRepository.save(currentAction);
+
+        return toRespDto(currentAction);
+    }
 }

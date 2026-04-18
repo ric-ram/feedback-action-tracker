@@ -198,7 +198,7 @@ export async function updateActionStatus(
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ newStatus }),
+            body: JSON.stringify({ status: newStatus }),
         }
     );
 
