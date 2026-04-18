@@ -10,9 +10,10 @@ import {
 
 import { Action } from '@/app/types/commonTypes';
 import { Spinner } from '../ui/spinner';
+import StatusSelector from './actions-status-selector';
 
 export default function ActionsTable(
-    props: Readonly<{ data: Action[]; loading: boolean }>
+    props: Readonly<{ feedbackId: string; data: Action[]; loading: boolean }>
 ) {
     const renderTableRows = () => {
         if (props.loading) {
@@ -41,7 +42,13 @@ export default function ActionsTable(
             <TableRow key={a.id}>
                 <TableCell>{a.title}</TableCell>
                 <TableCell>{a.description}</TableCell>
-                <TableCell>{a.status}</TableCell>
+                <TableCell>
+                    {StatusSelector({
+                        feedbackId: props.feedbackId,
+                        actionId: a.id,
+                        currentStatus: a.status,
+                    })}
+                </TableCell>
                 <TableCell>{a.updatedAt}</TableCell>
                 <TableCell>{a.createdAt}</TableCell>
             </TableRow>

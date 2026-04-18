@@ -47,7 +47,11 @@ export default function ActionsSection(
                 handleCreate={handleCreate}
             />
             <Separator className="my-6" />
-            <ActionsTable data={actions} loading={loading} />
+            <ActionsTable
+                feedbackId={props.feedbackId}
+                data={actions}
+                loading={loading}
+            />
         </div>
     );
 }

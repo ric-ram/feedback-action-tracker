@@ -185,3 +185,27 @@ export async function createActionForFeedback(
         };
     }
 }
+
+export async function updateActionStatus(
+    feedbackId: string,
+    actionId: string,
+    newStatus: string
+): Promise<void> {
+    const resp = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}/actions/${actionId}/status`,
+        {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newStatus }),
+        }
+    );
+
+    if (!resp.ok) {
+        const message = await resp.json();
+        throw new Error(message || 'Failed to update action status');
+    }
+
+    return await resp.json();
+}
