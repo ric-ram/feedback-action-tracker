@@ -4,25 +4,22 @@ import { useEffect, useState } from 'react';
 
 import { Action } from '@/app/types/commonTypes';
 import { getActionsForFeedback } from '@/lib/api';
-import { useParams } from 'next/navigation';
 import { Separator } from '../ui/separator';
 import ActionForm from './actions-form';
 import ActionsTable from './actions-table';
 
-export default function ActionsSection() {
-    const params = useParams();
-    const paramValue = params.feedbackId;
-    const feedbackId: string = Array.isArray(paramValue)
-        ? paramValue[0]
-        : (paramValue ?? '');
-
+export default function ActionsSection(
+    props: Readonly<{
+        feedbackId: string;
+    }>
+) {
     const [actions, setActions] = useState<Action[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     const loadActions = async () => {
         try {
             setLoading(true);
-            const resp = await getActionsForFeedback(feedbackId);
+            const resp = await getActionsForFeedback(props.feedbackId);
             setActions(resp);
         } catch (error) {
             console.log(error);
@@ -45,7 +42,10 @@ export default function ActionsSection() {
 
     return (
         <div>
-            <ActionForm feedbackId={feedbackId} handleCreate={handleCreate} />
+            <ActionForm
+                feedbackId={props.feedbackId}
+                handleCreate={handleCreate}
+            />
             <Separator className="my-6" />
             <ActionsTable data={actions} loading={loading} />
         </div>
