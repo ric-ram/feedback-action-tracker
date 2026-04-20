@@ -3,6 +3,8 @@ package com.ricram.feedback_action_tracker_api.controller;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
+import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 import com.ricram.feedback_action_tracker_api.service.ActionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,15 @@ public class ActionController {
     @GetMapping
     public ResponseEntity<List<ActionRespDto>> listActions(@PathVariable UUID feedbackId) {
         List<ActionRespDto> resp = actionService.listActionsForFeedback(feedbackId);
+
+        return ResponseEntity
+                .ok()
+                .body(resp);
+    }
+
+    @PatchMapping("/{actionId}/status")
+    public ResponseEntity<ActionRespDto> updateActionStatus(@PathVariable UUID feedbackId, @PathVariable UUID actionId, @Valid @RequestBody UpdateActionStatusReqDto status) {
+        ActionRespDto resp = actionService.updateActionStatus(feedbackId, actionId, status);
 
         return ResponseEntity
                 .ok()

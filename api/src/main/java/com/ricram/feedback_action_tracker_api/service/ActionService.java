@@ -2,6 +2,8 @@ package com.ricram.feedback_action_tracker_api.service;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
+import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +32,19 @@ public interface ActionService {
 
     /**
      * List all actions belonging to a feedback
+     *
      * @param feedbackId feedback ID of the owner of the actions
-     * @return a list containinhg all the actions belonging to said feedback
+     * @return a list containing all the actions belonging to said feedback
      */
     List<ActionRespDto> listActionsForFeedback(UUID feedbackId);
+
+    /**
+     * Updates the status of an action
+     *
+     * @param feedbackId feedback ID of the owner of the action
+     * @param actionId the action ID
+     * @param actionStatus the new status of the action
+     * @return the updated action
+     */
+    ActionRespDto updateActionStatus(UUID feedbackId, UUID actionId, UpdateActionStatusReqDto actionStatus);
 }

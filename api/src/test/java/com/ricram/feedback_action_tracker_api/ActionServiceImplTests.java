@@ -2,6 +2,7 @@ package com.ricram.feedback_action_tracker_api;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
 import com.ricram.feedback_action_tracker_api.entity.Action;
 import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 import com.ricram.feedback_action_tracker_api.entity.Feedback;
@@ -337,5 +338,70 @@ public class ActionServiceImplTests {
         verify(feedbackRepository).existsById(feedbackId);
         verify(actionRepository).findByFeedbackId(feedbackId, sort);
         verifyNoMoreInteractions(feedbackRepository, actionRepository);
+    }
+
+    @Test
+    @DisplayName("updateActionStatus() -> Success")
+    void updateActionStatusSuccess() {
+        UUID feedbackId = UUID.randomUUID();
+        UUID actionId = UUID.randomUUID();
+        UUID workspaceId = UUID.randomUUID();
+        Workspace existingWorkspace = new Workspace(
+                workspaceId,
+                "test",
+                Instant.parse("2026-03-09T12:00:00Z"),
+                Instant.parse("2026-03-09T12:00:00Z")
+        );
+
+        Feedback existingFeedback = new Feedback(
+                feedbackId,
+                existingWorkspace,
+                "testFeedback",
+                "testing",
+                "TEST",
+                Instant.parse("2026-03-10T12:00:00Z"),
+                Instant.parse("2026-03-10T12:00:00Z")
+        );
+
+        Action existingAction = new Action(
+                actionId,
+                existingFeedback,
+                "task",
+                "testing",
+                ActionStatus.TODO,
+                Instant.parse("2026-04-07T12:00:00Z"),
+                Instant.parse("2026-04-07T12:00:00Z")
+        );
+
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.of(existingAction));
+
+        ArgumentCaptor<Action> captor = ArgumentCaptor.forClass(Action.class);
+
+        when(actionRepository.save(captor.capture()))
+                .thenAnswer(invocation -> {
+                    Action action = (Action) invocation.getArguments()[0];
+                    action.setUpdatedAt(Instant.parse("2026-04-08T12:00:00Z"));
+                    return action;
+                });
+
+        UpdateActionStatusReqDto req = new UpdateActionStatusReqDto(ActionStatus.DONE);
+
+        ActionRespDto resp = actionServiceImpl.updateActionStatus(feedbackId, actionId, req);
+
+        assertEquals(existingAction.getId(), resp.id());
+        assertEquals(existingAction.getTitle(), resp.title());
+        assertEquals(existingAction.getDescription(), resp.description());
+        assertEquals(ActionStatus.DONE, resp.status());
+        assertEquals(existingAction.getCreatedAt(), resp.createdAt());
+        assertEquals(Instant.parse("2026-04-08T12:00:00Z"), resp.updatedAt());
+
+        Action savedAction = captor.getValue();
+        assertEquals(ActionStatus.DONE, savedAction.getStatus());
+        assertEquals(Instant.parse("2026-04-08T12:00:00Z"), savedAction.getUpdatedAt());
+
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
+        verify(actionRepository).save(captor.capture());
+        verifyNoMoreInteractions(actionRepository);
+
     }
 }
