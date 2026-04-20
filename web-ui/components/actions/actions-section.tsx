@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 
 import { Action } from '@/app/types/commonTypes';
-import { getActionsForFeedback } from '@/lib/api';
-import { Separator } from '../ui/separator';
 import ActionForm from './actions-form';
 import ActionsTable from './actions-table';
+import { Separator } from '../ui/separator';
+import { getActionsForFeedback } from '@/lib/api';
 
 export default function ActionsSection(
     props: Readonly<{
@@ -38,7 +38,7 @@ export default function ActionsSection(
         };
 
         run();
-    }, []);
+    }, [loadActions]);
 
     return (
         <div>
