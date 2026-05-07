@@ -2,6 +2,7 @@ package com.ricram.feedback_action_tracker_api.service.impl;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionReqDto;
 import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
 import com.ricram.feedback_action_tracker_api.entity.Action;
 import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
@@ -85,6 +86,18 @@ public class ActionServiceImpl implements ActionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
 
         currentAction.setStatus(actionStatus.status());
+        actionRepository.save(currentAction);
+
+        return toRespDto(currentAction);
+    }
+
+    @Override
+    public ActionRespDto updateAction(UUID feedbackId, UUID actionId, UpdateActionReqDto actionReqDto) {
+        Action currentAction = actionRepository.findByFeedbackIdAndId(feedbackId, actionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
+
+        currentAction.setTitle(actionReqDto.title());
+        currentAction.setDescription(actionReqDto.description());
         actionRepository.save(currentAction);
 
         return toRespDto(currentAction);

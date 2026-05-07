@@ -2,6 +2,7 @@ package com.ricram.feedback_action_tracker_api.service;
 
 import com.ricram.feedback_action_tracker_api.dto.ActionRespDto;
 import com.ricram.feedback_action_tracker_api.dto.CreateActionReqDto;
+import com.ricram.feedback_action_tracker_api.dto.UpdateActionReqDto;
 import com.ricram.feedback_action_tracker_api.dto.UpdateActionStatusReqDto;
 import com.ricram.feedback_action_tracker_api.entity.ActionStatus;
 
@@ -47,4 +48,14 @@ public interface ActionService {
      * @return the updated action
      */
     ActionRespDto updateActionStatus(UUID feedbackId, UUID actionId, UpdateActionStatusReqDto actionStatus);
+
+    /**
+     * Update the title and description of an action
+     *
+     * @param feedbackId feedback ID of the owner of the action
+     * @param actionId the action ID
+     * @param actionReqDto the object containing the updates to the action
+     * @return the updated action
+     */
+    ActionRespDto updateAction(UUID feedbackId, UUID actionId, UpdateActionReqDto actionReqDto);
 }
