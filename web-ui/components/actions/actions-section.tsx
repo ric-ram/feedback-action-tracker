@@ -28,7 +28,7 @@ export default function ActionsSection(
         }
     }, [props.feedbackId]);
 
-    const handleCreate = async () => {
+    const refreshActions = async () => {
         await loadActions();
     };
 
@@ -40,13 +40,14 @@ export default function ActionsSection(
         <div>
             <ActionForm
                 feedbackId={props.feedbackId}
-                handleCreate={handleCreate}
+                onRefresh={refreshActions}
             />
             <Separator className="my-6" />
             <ActionsTable
                 feedbackId={props.feedbackId}
                 data={actions}
                 loading={loading}
+                onRefresh={refreshActions}
             />
         </div>
     );

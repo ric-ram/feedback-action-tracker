@@ -9,17 +9,23 @@ import {
 } from '../ui/table';
 
 import { Action } from '@/app/types/commonTypes';
+import ActionsDropdownMenu from './actions-dropdown-menu';
 import { Spinner } from '../ui/spinner';
 import StatusSelector from './actions-status-selector';
 
 export default function ActionsTable(
-    props: Readonly<{ feedbackId: string; data: Action[]; loading: boolean }>
+    props: Readonly<{
+        feedbackId: string;
+        data: Action[];
+        loading: boolean;
+        onRefresh: () => void;
+    }>
 ) {
     const renderTableRows = () => {
         if (props.loading) {
             return (
                 <TableRow>
-                    <TableCell colSpan={5} className="h-24">
+                    <TableCell colSpan={6} className="h-24">
                         <div className="flex items-center justify-center">
                             <Spinner className="size-8" />
                         </div>
@@ -31,7 +37,7 @@ export default function ActionsTable(
         if (props.data.length === 0) {
             return (
                 <TableRow>
-                    <TableCell colSpan={5} className="text-center">
+                    <TableCell colSpan={6} className="text-center">
                         There are no actions yet for the current feedback
                     </TableCell>
                 </TableRow>
@@ -51,6 +57,13 @@ export default function ActionsTable(
                 </TableCell>
                 <TableCell>{a.updatedAt}</TableCell>
                 <TableCell>{a.createdAt}</TableCell>
+                <TableCell className="text-center">
+                    <ActionsDropdownMenu
+                        feedbackId={props.feedbackId}
+                        action={a}
+                        onRefresh={props.onRefresh}
+                    />
+                </TableCell>
             </TableRow>
         ));
     };
@@ -67,6 +80,7 @@ export default function ActionsTable(
                     <TableHead>Status</TableHead>
                     <TableHead>Last Updated</TableHead>
                     <TableHead>Created At</TableHead>
+                    <TableHead>Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>{renderTableRows()}</TableBody>
