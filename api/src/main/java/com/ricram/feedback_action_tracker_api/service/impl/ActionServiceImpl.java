@@ -92,6 +92,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional
     public ActionRespDto updateAction(UUID feedbackId, UUID actionId, UpdateActionReqDto actionReqDto) {
         Action currentAction = actionRepository.findByFeedbackIdAndId(feedbackId, actionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
