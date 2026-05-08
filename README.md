@@ -144,9 +144,9 @@ This ensures the project remains in a working state at all times.
 
 ### Actions Domain
 
-- [ ] Create actions from feedback
-- [ ] Action status (todo, in progress, done)
-- [ ] Link actions to feedback
+- [x] Create actions from feedback
+- [x] Action status (todo, in progress, done)
+- [x] Link actions to feedback
 - [ ] Action listing and basic management
 
 ### User & Workspace Domain
