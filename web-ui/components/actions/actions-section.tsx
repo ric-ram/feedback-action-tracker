@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Action } from '@/app/types/commonTypes';
 import ActionForm from './actions-form';
@@ -16,7 +16,7 @@ export default function ActionsSection(
     const [actions, setActions] = useState<Action[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const loadActions = async () => {
+    const loadActions = useCallback(async () => {
         try {
             setLoading(true);
             const resp = await getActionsForFeedback(props.feedbackId);
@@ -26,31 +26,28 @@ export default function ActionsSection(
         } finally {
             setLoading(false);
         }
-    };
+    }, [props.feedbackId]);
 
-    const handleCreate = async () => {
+    const refreshActions = async () => {
         await loadActions();
     };
 
     useEffect(() => {
-        const run = async () => {
-            await loadActions();
-        };
-
-        run();
+        loadActions();
     }, [loadActions]);
 
     return (
         <div>
             <ActionForm
                 feedbackId={props.feedbackId}
-                handleCreate={handleCreate}
+                onRefresh={refreshActions}
             />
             <Separator className="my-6" />
             <ActionsTable
                 feedbackId={props.feedbackId}
                 data={actions}
                 loading={loading}
+                onRefresh={refreshActions}
             />
         </div>
     );

@@ -209,3 +209,27 @@ export async function updateActionStatus(
 
     return await resp.json();
 }
+
+export async function updateAction(
+    feedbackId: string,
+    actionId: string,
+    payload: ActionPayload
+): Promise<void> {
+    const resp = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}/actions/${actionId}`,
+        {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        }
+    );
+
+    if (!resp.ok) {
+        const message = await resp.json();
+        throw new Error(message || 'Failed to update action');
+    }
+
+    return await resp.json();
+}

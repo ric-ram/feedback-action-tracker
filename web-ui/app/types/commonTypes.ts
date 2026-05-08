@@ -31,5 +31,5 @@ export interface Action extends EntryData {
 
 export type ActionPayload = {
     title: string;
-    description?: string;
+    description: string;
 };

@@ -18,7 +18,7 @@ import { Textarea } from '../ui/textarea';
 export default function ActionForm(
     props: Readonly<{
         feedbackId: string;
-        handleCreate: () => void;
+        onRefresh: () => void;
     }>
 ) {
     const [title, setTitle] = useState<string>('');
@@ -49,7 +49,7 @@ export default function ActionForm(
                 setSuccess(true);
                 setSubmitMessage('New action submitted successfully!');
                 cleanState();
-                props.handleCreate();
+                props.onRefresh();
             } else {
                 setSuccess(false);
                 setSubmitMessage('Error submitting new action!');
