@@ -103,4 +103,13 @@ public class ActionServiceImpl implements ActionService {
 
         return toRespDto(currentAction);
     }
+
+    @Override
+    @Transactional
+    public void deleteAction(UUID feedbackId, UUID actionId) {
+        Action currentAction = actionRepository.findByFeedbackIdAndId(feedbackId, actionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "action not found"));
+
+        actionRepository.delete(currentAction);
+    }
 }

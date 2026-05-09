@@ -74,4 +74,11 @@ public class ActionController {
                 .ok()
                 .body(resp);
     }
+
+    @DeleteMapping("/{actionId}")
+    public ResponseEntity<Void> deleteAction(@PathVariable UUID feedbackId, @PathVariable UUID actionId) {
+        actionService.deleteAction(feedbackId, actionId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
