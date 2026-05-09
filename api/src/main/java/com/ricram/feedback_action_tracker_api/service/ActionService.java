@@ -58,4 +58,12 @@ public interface ActionService {
      * @return the updated action
      */
     ActionRespDto updateAction(UUID feedbackId, UUID actionId, UpdateActionReqDto actionReqDto);
+
+    /**
+     * Delete the provided action
+     *
+     * @param feedbackId feedback ID of the owner of the action
+     * @param actionId the action ID of the action to delete
+     */
+    void deleteAction(UUID feedbackId, UUID actionId);
 }

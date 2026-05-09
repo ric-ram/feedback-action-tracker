@@ -11,6 +11,7 @@ import com.ricram.feedback_action_tracker_api.entity.Workspace;
 import com.ricram.feedback_action_tracker_api.repository.ActionRepository;
 import com.ricram.feedback_action_tracker_api.repository.FeedbackRepository;
 import com.ricram.feedback_action_tracker_api.service.impl.ActionServiceImpl;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,19 +49,7 @@ public class ActionServiceImplTests {
         UUID feedbackId = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
         UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(workspaceId,
-                "test",
-                Instant.parse("2026-02-28T12:00:00Z"),
-                Instant.parse("2026-02-28T12:00:00Z"));
-
-        Feedback existingFeedback = new Feedback(feedbackId,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-04-07T12:00:00Z"),
-                Instant.parse("2026-04-07T12:00:00Z")
-        );
+        Feedback existingFeedback = getExistingFeedback(workspaceId, "2026-02-28T12:00:00Z", feedbackId, "2026-04-07T12:00:00Z");
 
         when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(existingFeedback));
 
@@ -121,32 +110,7 @@ public class ActionServiceImplTests {
         UUID feedbackId = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
         UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(
-                workspaceId,
-                "test",
-                Instant.parse("2026-03-09T12:00:00Z"),
-                Instant.parse("2026-03-09T12:00:00Z")
-        );
-
-        Feedback existingFeedback = new Feedback(
-                feedbackId,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-03-10T12:00:00Z"),
-                Instant.parse("2026-03-10T12:00:00Z")
-        );
-
-        Action existingAction = new Action(
-                actionId,
-                existingFeedback,
-                "task",
-                "testing",
-                ActionStatus.TODO,
-                Instant.parse("2026-04-07T12:00:00Z"),
-                Instant.parse("2026-04-07T12:00:00Z")
-        );
+        Action existingAction = getExistingAction(workspaceId, feedbackId, actionId, "2026-04-07T12:00:00Z");
 
         when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.of(existingAction));
 
@@ -160,6 +124,39 @@ public class ActionServiceImplTests {
 
         verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
         verifyNoMoreInteractions(actionRepository);
+    }
+
+    private static @NonNull Action getExistingAction(UUID workspaceId, UUID feedbackId, UUID actionId, String actDate) {
+        Feedback existingFeedback = getExistingFeedback(workspaceId, "2026-03-09T12:00:00Z", feedbackId, "2026-03-10T12:00:00Z");
+
+        return new Action(
+                actionId,
+                existingFeedback,
+                "task",
+                "testing",
+                ActionStatus.TODO,
+                Instant.parse(actDate),
+                Instant.parse(actDate)
+        );
+    }
+
+    private static @NonNull Feedback getExistingFeedback(UUID workspaceId, String wrkDate, UUID feedbackId, String feedDate) {
+        Workspace existingWorkspace = new Workspace(
+                workspaceId,
+                "test",
+                Instant.parse(wrkDate),
+                Instant.parse(wrkDate)
+        );
+
+        return new Feedback(
+                feedbackId,
+                existingWorkspace,
+                "testFeedback",
+                "testing",
+                "TEST",
+                Instant.parse(feedDate),
+                Instant.parse(feedDate)
+        );
     }
 
     @Test
@@ -186,46 +183,7 @@ public class ActionServiceImplTests {
     @DisplayName("getActionById() -> Feedback-action mismatch, action not found")
     void getActionByIdActionNotChildOfFeedback() {
         UUID feedbackId1 = UUID.randomUUID();
-        UUID feedbackId2 = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
-        UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(
-                workspaceId,
-                "test",
-                Instant.parse("2026-03-09T12:00:00Z"),
-                Instant.parse("2026-03-09T12:00:00Z")
-        );
-
-        Feedback existingFeedback1 = new Feedback(
-                feedbackId1,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-03-10T12:00:00Z"),
-                Instant.parse("2026-03-10T12:00:00Z")
-        );
-
-        Feedback existingFeedback2 = new Feedback(
-                feedbackId2,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-03-10T12:00:00Z"),
-                Instant.parse("2026-03-10T12:00:00Z")
-        );
-
-        Action existingAction = new Action(
-                actionId,
-                existingFeedback2,
-                "task",
-                "testing",
-                ActionStatus.TODO,
-                Instant.parse("2026-04-07T12:00:00Z"),
-                Instant.parse("2026-04-07T12:00:00Z")
-        );
-
 
         when(actionRepository.findByFeedbackIdAndId(feedbackId1, actionId)).thenReturn(Optional.empty());
 
@@ -267,48 +225,15 @@ public class ActionServiceImplTests {
     void listActionsForFeedbackSuccess() {
         UUID feedbackId = UUID.randomUUID();
         UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(
-                workspaceId,
-                "test",
-                Instant.parse("2026-03-09T12:00:00Z"),
-                Instant.parse("2026-03-09T12:00:00Z")
-        );
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-
-        Feedback existingFeedback = new Feedback(
-                feedbackId,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-03-09T12:00:00Z"),
-                Instant.parse("2026-03-09T12:00:00Z")
-        );
-
+        
         UUID a1Id = UUID.randomUUID();
         UUID a2Id = UUID.randomUUID();
 
-        Action a1 = Action.builder()
-                .id(a1Id)
-                .feedback(existingFeedback)
-                .title("task 1")
-                .description("testing task 2")
-                .status(ActionStatus.TODO)
-                .createdAt(Instant.parse("2026-04-07T12:00:00Z"))
-                .updatedAt(Instant.parse("2026-04-07T12:00:00Z"))
-                .build();
-
-        Action a2 = Action.builder()
-                .id(a2Id)
-                .feedback(existingFeedback)
-                .title("task 2")
-                .description("testing task 2")
-                .status(ActionStatus.TODO)
-                .createdAt(Instant.parse("2026-04-06T12:00:00Z"))
-                .updatedAt(Instant.parse("2026-04-06T12:00:00Z"))
-                .build();
-
+        Action a1 = getExistingAction(workspaceId, feedbackId, a1Id, "2026-04-07T12:00:00Z");
+        Action a2 = getExistingAction(workspaceId, feedbackId, a2Id, "2026-04-06T12:00:00Z");
+        
         when(feedbackRepository.existsById(feedbackId)).thenReturn(Boolean.TRUE);
 
         when(actionRepository.findByFeedbackId(feedbackId, sort)).thenReturn(List.of(a1, a2));
@@ -347,32 +272,7 @@ public class ActionServiceImplTests {
         UUID feedbackId = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
         UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(
-                workspaceId,
-                "test",
-                Instant.parse("2026-03-09T12:00:00Z"),
-                Instant.parse("2026-03-09T12:00:00Z")
-        );
-
-        Feedback existingFeedback = new Feedback(
-                feedbackId,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-03-10T12:00:00Z"),
-                Instant.parse("2026-03-10T12:00:00Z")
-        );
-
-        Action existingAction = new Action(
-                actionId,
-                existingFeedback,
-                "task",
-                "testing",
-                ActionStatus.TODO,
-                Instant.parse("2026-04-07T12:00:00Z"),
-                Instant.parse("2026-04-07T12:00:00Z")
-        );
+        Action existingAction = getExistingAction(workspaceId, feedbackId, actionId, "2026-04-07T12:00:00Z");
 
         when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.of(existingAction));
 
@@ -412,22 +312,7 @@ public class ActionServiceImplTests {
         UUID feedbackId = UUID.randomUUID();
         UUID actionId = UUID.randomUUID();
         UUID workspaceId = UUID.randomUUID();
-        Workspace existingWorkspace = new Workspace(
-                workspaceId,
-                "test",
-                Instant.parse("2026-04-09T12:00:00Z"),
-                Instant.parse("2026-04-09T12:00:00Z")
-        );
-
-        Feedback existingFeedback = new Feedback(
-                feedbackId,
-                existingWorkspace,
-                "testFeedback",
-                "testing",
-                "TEST",
-                Instant.parse("2026-04-10T12:00:00Z"),
-                Instant.parse("2026-04-10T12:00:00Z")
-        );
+        Feedback existingFeedback = getExistingFeedback(workspaceId, "2026-04-09T12:00:00Z", feedbackId, "2026-04-10T12:00:00Z");
 
         Action existingAction = new Action(
                 actionId,
@@ -469,6 +354,43 @@ public class ActionServiceImplTests {
 
         verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
         verify(actionRepository).save(captor.capture());
+        verifyNoMoreInteractions(actionRepository);
+    }
+    
+    @Test
+    @DisplayName("deleteAction() -> Success")
+    void deleteActionSuccess() {
+        UUID feedbackId = UUID.randomUUID();
+        UUID actionId = UUID.randomUUID();
+        UUID workspaceId = UUID.randomUUID();
+        Action action = getExistingAction(workspaceId, feedbackId, actionId, "2026-05-08T12:00:00Z");
+
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.of(action));
+
+        assertDoesNotThrow(() -> actionServiceImpl.deleteAction(feedbackId, actionId));
+
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
+        verify(actionRepository).delete(action);
+        verifyNoMoreInteractions(actionRepository);
+    }
+
+    @Test
+    @DisplayName("deleteAction() -> Action not found")
+    void deleteActionNotFound() {
+        UUID feedbackId = UUID.randomUUID();
+        UUID actionId = UUID.randomUUID();
+
+        when(actionRepository.findByFeedbackIdAndId(feedbackId, actionId)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(
+                ResponseStatusException.class,
+                () -> actionServiceImpl.deleteAction(feedbackId, actionId)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertTrue(ex.getMessage().contains("action not found"));
+
+        verify(actionRepository).findByFeedbackIdAndId(feedbackId, actionId);
         verifyNoMoreInteractions(actionRepository);
     }
 }

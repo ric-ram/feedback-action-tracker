@@ -233,3 +233,20 @@ export async function updateAction(
 
     return await resp.json();
 }
+
+export async function deleteAction(
+    feedbackId: string,
+    actionId: string
+): Promise<void> {
+    const resp = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_FEEDBACK_ENDPOINT}/${feedbackId}/actions/${actionId}`,
+        {
+            method: 'DELETE',
+        }
+    );
+
+    if (resp.status !== 204) {
+        const message = await resp.json();
+        throw new Error(message || `Failed to delete action`);
+    }
+}
