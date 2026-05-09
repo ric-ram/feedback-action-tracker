@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '../ui/table';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 import { Action } from '@/app/types/commonTypes';
 import ActionsDropdownMenu from './actions-dropdown-menu';
@@ -21,6 +22,12 @@ export default function ActionsTable(
         onRefresh: () => void;
     }>
 ) {
+    const transformDate = (dateString: string, toUTC?: boolean) => {
+        const date = new Date(dateString);
+
+        return toUTC ? date.toUTCString() : date.toDateString();
+    };
+
     const renderTableRows = () => {
         if (props.loading) {
             return (
@@ -55,8 +62,26 @@ export default function ActionsTable(
                         currentStatus={a.status}
                     />
                 </TableCell>
-                <TableCell>{a.updatedAt}</TableCell>
-                <TableCell>{a.createdAt}</TableCell>
+                <TableCell>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            {transformDate(a.updatedAt)}
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            {transformDate(a.updatedAt, true)}
+                        </TooltipContent>
+                    </Tooltip>
+                </TableCell>
+                <TableCell>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            {transformDate(a.createdAt)}
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            {transformDate(a.createdAt, true)}
+                        </TooltipContent>
+                    </Tooltip>
+                </TableCell>
                 <TableCell className="text-center">
                     <ActionsDropdownMenu
                         feedbackId={props.feedbackId}
