@@ -18,13 +18,13 @@ import {
 } from '../ui/dropdown-menu';
 import { Field, FieldGroup, FieldLabel } from '../ui/field';
 import { FormEvent, useEffect, useState } from 'react';
+import { deleteAction, updateAction } from '@/lib/api';
 
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { MoreHorizontalIcon } from 'lucide-react';
 import { Spinner } from '../ui/spinner';
 import { Textarea } from '../ui/textarea';
-import { updateAction } from '@/lib/api';
 
 export default function ActionsDropdownMenu({
     feedbackId,
@@ -80,6 +80,20 @@ export default function ActionsDropdownMenu({
         }
     };
 
+    const handleDelete = async (e: Event) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            await deleteAction(feedbackId, currAction.id);
+            onRefresh();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DropdownMenu>
@@ -104,7 +118,11 @@ export default function ActionsDropdownMenu({
                     </DialogTrigger>
                     <DropdownMenuItem disabled>Duplicate</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive" disabled>
+                    <DropdownMenuItem
+                        variant="destructive"
+                        className="cursor-pointer"
+                        onSelect={(e) => handleDelete(e)}
+                    >
                         Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>
