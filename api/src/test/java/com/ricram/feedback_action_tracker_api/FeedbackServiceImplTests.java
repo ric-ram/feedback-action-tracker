@@ -99,7 +99,7 @@ public class FeedbackServiceImplTests {
         );
 
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
-        assertTrue(ex.getReason() != null && ex.getReason().contains("workspace not found"));
+        assertTrue(ex.getMessage().contains("workspace not found"));
 
         verify(workspaceRepository).findById(workspaceId);
         verifyNoMoreInteractions(workspaceRepository);
