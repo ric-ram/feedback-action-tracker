@@ -139,15 +139,15 @@ This ensures the project remains in a working state at all times.
 
 - [ ] Input validation improvements (frontend + backend)
 - [ ] Feedback source standardization (enum)
-- [ ] Error handling and API response standardization
-- [ ] Loading and empty states improvement
+- [x] Error handling and API response standardization
+- [x] Loading and empty states improvement
 
 ### Actions Domain
 
 - [x] Create actions from feedback
 - [x] Action status (todo, in progress, done)
 - [x] Link actions to feedback
-- [ ] Action listing and basic management
+- [x] Action listing and basic management
 
 ### User & Workspace Domain
 
